@@ -89,3 +89,17 @@ h1 {
 #toggle-lang:hover {
     background-color: #555;
 }
+.links a {
+    display: inline-block;
+    background-color: #1e90ff;
+    color: white;
+    padding: 12px 24px;
+    margin: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+.links a:hover {
+    background-color: #1565c0;
+}
