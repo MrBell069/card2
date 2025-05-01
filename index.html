@@ -24,16 +24,23 @@
       <a href="https://t.me/bred_04" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
       <a href="#" id="toggle-lang"><i class="fas fa-language"></i> English</a>
     </div>
+
+    <div class="game">
+      <h2 data-ru="Крестики-нолики" data-en="Tic-Tac-Toe">Крестики-нолики</h2>
+      <div class="board" id="board"></div>
+      <p id="status"></p>
+      <button onclick="restartGame()" id="restart-btn">Сыграть ещё</button>
+    </div>
   </div>
 
   <script>
+    // Переключение языка
     window.addEventListener('DOMContentLoaded', () => {
       const toggleBtn = document.getElementById('toggle-lang');
       let currentLang = 'ru';
 
       toggleBtn.addEventListener('click', (e) => {
         e.preventDefault();
-
         currentLang = currentLang === 'ru' ? 'en' : 'ru';
 
         document.querySelectorAll('[data-ru]').forEach(el => {
@@ -44,7 +51,67 @@
           ? '<i class="fas fa-language"></i> English' 
           : '<i class="fas fa-language"></i> Русский';
       });
+
+      createBoard();
     });
+
+    // Крестики-нолики
+    const board = document.getElementById("board");
+    const status = document.getElementById("status");
+    let cells = [];
+    let currentPlayer = "X";
+    let gameActive = true;
+
+    function createBoard() {
+      board.innerHTML = "";
+      cells = [];
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.addEventListener("click", () => handleCellClick(i));
+        board.appendChild(cell);
+        cells.push(cell);
+      }
+      status.textContent = "Ходит: X";
+      gameActive = true;
+      currentPlayer = "X";
+    }
+
+    function handleCellClick(index) {
+      if (!gameActive || cells[index].textContent) return;
+
+      cells[index].textContent = currentPlayer;
+
+      if (checkWin(currentPlayer)) {
+        status.textContent = `Победил: ${currentPlayer}`;
+        gameActive = false;
+        return;
+      }
+
+      if (cells.every(cell => cell.textContent)) {
+        status.textContent = "Ничья!";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      status.textContent = `Ходит: ${currentPlayer}`;
+    }
+
+    function checkWin(player) {
+      const winCombos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return winCombos.some(combo =>
+        combo.every(i => cells[i].textContent === player)
+      );
+    }
+
+    function restartGame() {
+      createBoard();
+    }
   </script>
 </body>
 </html>
