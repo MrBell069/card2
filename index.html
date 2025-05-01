@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Визитка</title>
+  <title>Визитка + Крестики-нолики</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -13,7 +13,7 @@
     <img src="tim.jpg" alt="Фото" class="avatar" />
 
     <h1 data-ru="Боровков Тимофей" data-en="Timofey Borovkov">Боровков Тимофей</h1>
-    <p class="desc" data-ru="HTML и CSS вёрстка" data-en="HTML layout">HTML и CSS вёрстка</p>
+    <p class="desc" data-ru="HTML вёрстка" data-en="HTML layout">HTML и CSS вёрстка</p>
     <p data-ru="Обучаюсь в престижном ГАГПК, люблю HTML и CSS." 
        data-en="Studying at prestigious GAGPK, love HTML & CSS.">
        Обучаюсь в престижном ГАГПК, люблю HTML и CSS.
@@ -22,118 +22,112 @@
     <div class="links">
       <a href="https://github.com/MrBell069" target="_blank"><i class="fab fa-github"></i> GitHub</a>
       <a href="https://t.me/bred_04" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-      <a href="#" id="toggle-lang"><i class="fas fa-language"></i> English</a>
     </div>
 
-    <p>Ты играешь за: X</p>
+    <button id="toggle-lang"><i class="fas fa-language"></i> English</button>
+
+    <h2 data-ru="Ты играешь за: X" data-en="You play as: X">Ты играешь за: X</h2>
+    <label for="difficulty" id="difficulty-label" data-ru="Сложность:" data-en="Difficulty:">Сложность:</label>
     <select id="difficulty">
-      <option value="easy">Легко</option>
-      <option value="medium" selected>Средне</option>
-      <option value="hard">Сложно</option>
+      <option value="easy">Лёгкая</option>
+      <option value="medium">Средняя</option>
+      <option value="hard">Сложная</option>
     </select>
 
-    <div class="board" id="board"></div>
-    <button id="restart-btn">Начать заново</button>
+    <div class="board" id="board">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+    </div>
+
+    <button id="restart-btn">Сыграть ещё</button>
   </div>
 
   <script>
-    const boardEl = document.getElementById('board');
+    const cells = document.querySelectorAll('.cell');
+    const boardElement = document.getElementById('board');
     const restartBtn = document.getElementById('restart-btn');
     const difficultySelect = document.getElementById('difficulty');
-    let board, currentPlayer, gameActive, difficulty;
+    const toggleBtn = document.getElementById('toggle-lang');
+
+    let board = Array(9).fill(null);
+    let gameActive = true;
+    let difficulty = 'easy';
+    let currentLang = 'ru';
 
     const WINNING_COMBOS = [
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
     ];
 
-    function initGame() {
-      board = Array(9).fill(null);
-      currentPlayer = 'X';
-      gameActive = true;
-      difficulty = difficultySelect.value;
-      boardEl.innerHTML = '';
-      board.forEach((_, idx) => {
-        const cell = document.createElement('div');
-        cell.classList.add('cell');
-        cell.dataset.index = idx;
-        cell.addEventListener('click', handleCellClick);
-        boardEl.appendChild(cell);
+    function renderBoard() {
+      cells.forEach((cell, i) => {
+        cell.textContent = board[i] || '';
       });
     }
 
-    function handleCellClick(e) {
-      const idx = e.target.dataset.index;
-      if (!gameActive || board[idx]) return;
-      makeMove(idx, currentPlayer);
-      if (!checkWinner()) {
-        setTimeout(() => aiMove(), 300);
-      }
-    }
-
     function makeMove(index, player) {
+      if (board[index] || !gameActive) return;
       board[index] = player;
-      const cell = boardEl.querySelector(`.cell[data-index="${index}"]`);
-      if (cell) cell.textContent = player;
+      renderBoard();
     }
 
     function checkWinner() {
       for (let combo of WINNING_COMBOS) {
-        const [a,b,c] = combo;
+        const [a, b, c] = combo;
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
           gameActive = false;
+          alert((currentLang === 'ru' ? 'Победил: ' : 'Winner: ') + board[a]);
           return board[a];
         }
       }
       if (!board.includes(null)) {
         gameActive = false;
+        alert(currentLang === 'ru' ? 'Ничья!' : 'Draw!');
         return 'Draw';
       }
       return null;
     }
 
-    function aiMove() {
-      if (!gameActive) return;
+    function handleCellClick(e) {
+      const idx = e.target.dataset.index;
+      if (!gameActive || board[idx]) return;
 
-      let move;
-      switch (difficulty) {
-        case 'easy':
-          move = getRandomMove();
-          break;
-        case 'medium':
-          move = Math.random() < 0.5 ? getBestMove() : getRandomMove();
-          break;
-        case 'hard':
-          move = getBestMove();
-          break;
-      }
+      makeMove(idx, 'X');
+      const result = checkWinner();
+      if (result) return;
 
-      if (move != null) {
-        makeMove(move, 'O');
-        checkWinner();
-      }
+      setTimeout(aiMove, 300);
+    }
+
+    function getAvailableMoves() {
+      return board.map((v, i) => v === null ? i : null).filter(v => v !== null);
     }
 
     function getRandomMove() {
-      const empty = board.map((v, i) => v === null ? i : null).filter(v => v !== null);
-      return empty[Math.floor(Math.random() * empty.length)];
+      const available = getAvailableMoves();
+      return available[Math.floor(Math.random() * available.length)];
     }
 
     function getBestMove() {
       let bestScore = -Infinity;
       let move;
-      board.forEach((cell, idx) => {
-        if (!cell) {
-          board[idx] = 'O';
-          let score = minimax(board, 0, false);
-          board[idx] = null;
-          if (score > bestScore) {
-            bestScore = score;
-            move = idx;
-          }
+      for (let i of getAvailableMoves()) {
+        board[i] = 'O';
+        let score = minimax(board, 0, false);
+        board[i] = null;
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
         }
-      });
+      }
       return move;
     }
 
@@ -144,51 +138,67 @@
       if (result === 'Draw') return 0;
 
       if (isMaximizing) {
-        let best = -Infinity;
-        newBoard.forEach((cell, idx) => {
-          if (!cell) {
-            newBoard[idx] = 'O';
-            best = Math.max(best, minimax(newBoard, depth + 1, false));
-            newBoard[idx] = null;
-          }
-        });
-        return best;
+        let bestScore = -Infinity;
+        for (let i of getAvailableMoves()) {
+          newBoard[i] = 'O';
+          let score = minimax(newBoard, depth + 1, false);
+          newBoard[i] = null;
+          bestScore = Math.max(score, bestScore);
+        }
+        return bestScore;
       } else {
-        let best = Infinity;
-        newBoard.forEach((cell, idx) => {
-          if (!cell) {
-            newBoard[idx] = 'X';
-            best = Math.min(best, minimax(newBoard, depth + 1, true));
-            newBoard[idx] = null;
-          }
-        });
-        return best;
+        let bestScore = Infinity;
+        for (let i of getAvailableMoves()) {
+          newBoard[i] = 'X';
+          let score = minimax(newBoard, depth + 1, true);
+          newBoard[i] = null;
+          bestScore = Math.min(score, bestScore);
+        }
+        return bestScore;
       }
     }
 
-    restartBtn.addEventListener('click', initGame);
+    function aiMove() {
+      if (!gameActive) return;
+      let move;
+      if (difficulty === 'easy') move = getRandomMove();
+      else if (difficulty === 'medium') {
+        move = Math.random() < 0.5 ? getBestMove() : getRandomMove();
+      } else move = getBestMove();
+
+      if (move != null) {
+        makeMove(move, 'O');
+        checkWinner();
+      }
+    }
+
+    function resetGame() {
+      board = Array(9).fill(null);
+      gameActive = true;
+      renderBoard();
+    }
+
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+    restartBtn.addEventListener('click', resetGame);
     difficultySelect.addEventListener('change', () => {
       difficulty = difficultySelect.value;
-      initGame();
     });
 
-    const toggleBtn = document.getElementById('toggle-lang');
-    let currentLang = 'ru';
-
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+    toggleBtn.addEventListener('click', () => {
       currentLang = currentLang === 'ru' ? 'en' : 'ru';
-
       document.querySelectorAll('[data-ru]').forEach(el => {
         el.textContent = el.dataset[currentLang];
       });
 
-      toggleBtn.innerHTML = currentLang === 'ru' 
-        ? '<i class="fas fa-language"></i> English' 
+      toggleBtn.innerHTML = currentLang === 'ru'
+        ? '<i class="fas fa-language"></i> English'
         : '<i class="fas fa-language"></i> Русский';
+
+      document.querySelector('#difficulty-label').textContent =
+        currentLang === 'ru' ? 'Сложность:' : 'Difficulty:';
     });
 
-    initGame();
+    renderBoard();
   </script>
 </body>
 </html>
