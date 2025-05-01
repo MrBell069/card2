@@ -61,17 +61,41 @@ h1 {
     background-color: #1565c0;
 }
 
+/* Добавь это в самый конец style.css или замени существующий media-запрос */
 @media (max-width: 500px) {
-    .card {
-        padding: 20px;
-    }
+  .card {
+    padding: 20px;
+    margin: 20px;
+    max-width: 90vw;
+    box-sizing: border-box;
+  }
 
-    .links a, #restart-btn, select {
-        display: block;
-        width: 100%;
-        margin: 10px 0;
-    }
+  .links a,
+  #toggle-lang,
+  #restart-btn,
+  #difficulty {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  #difficulty {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .board {
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  .cell {
+    font-size: 40px;
+  }
 }
+
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
