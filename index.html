@@ -26,22 +26,10 @@
             <a href="https://t.me/bred_04" target="_blank">
                 <i class="fab fa-telegram-plane"></i> Telegram
             </a>
+            <a href="#" id="toggle-lang">
+                🌐 English
+            </a>
         </div>
-
-        <button id="toggle-lang">English</button>
     </div>
 
     <script>
-        const toggleBtn = document.getElementById('toggle-lang');
-        let currentLang = 'ru';
-
-        toggleBtn.addEventListener('click', () => {
-            currentLang = currentLang === 'ru' ? 'en' : 'ru';
-            document.querySelectorAll('[data-ru]').forEach(el => {
-                el.textContent = el.dataset[currentLang];
-            });
-            toggleBtn.textContent = currentLang === 'ru' ? 'English' : 'Русский';
-        });
-    </script>
-</body>
-</html>
