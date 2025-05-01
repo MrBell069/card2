@@ -1,1 +1,1 @@
-# card2
+# AUTHOR: TIMOFEY BOROVKOV
