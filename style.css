@@ -1,6 +1,6 @@
 body {
-    background-color: #121212; /* тёмный фон */
-    color: #ffffff; /* белый текст */
+    background-color: #121212;
+    color: #ffffff;
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
@@ -8,31 +8,54 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    font-size: 20px;
 }
 
 .card {
-    background-color: #1e1e1e; /* тёмно-серый блок визитки */
+    background-color: #1e1e1e;
     border-radius: 12px;
-    padding: 30px;
-    max-width: 600px; /* ширина окна */
+    padding: 40px;
+    max-width: 700px;
     margin: 50px auto;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
     text-align: center;
 }
 
 img {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #fff;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-a {
-    color: #1e90ff; /* синие ссылки */
-    text-decoration: none;
+h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
 }
-a:hover {
-    text-decoration: underline;
+
+.desc {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.links {
+    margin-top: 20px;
+}
+
+.links a {
+    display: inline-block;
+    background-color: #1e90ff;
+    color: white;
+    padding: 12px 24px;
+    margin: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.links a:hover {
+    background-color: #1565c0;
 }
