@@ -3,212 +3,201 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Визитка + Крестики-нолики</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Визитка</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-size: 20px;
+    }
+
+    .card {
+      animation: fadeIn 0.8s ease;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 700px;
+      margin: 50px auto;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .desc {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .links {
+      margin-top: 20px;
+    }
+
+    .links a,
+    #toggle-lang,
+    #restart-btn,
+    #difficulty {
+      display: inline-block;
+      background-color: #1e90ff;
+      color: white;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .links a:hover,
+    #toggle-lang:hover,
+    #restart-btn:hover,
+    #difficulty:hover {
+      background-color: #1565c0;
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 20px;
+        margin: 20px;
+        max-width: 90vw;
+        box-sizing: border-box;
+      }
+
+      .links a,
+      #toggle-lang,
+      #restart-btn,
+      #difficulty {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      #difficulty {
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      .board {
+        grid-template-columns: repeat(3, 1fr);
+        width: 100%;
+      }
+
+      .cell {
+        font-size: 40px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      background-color: #2c2c2c;
+      font-size: 36px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+
+    .cell:hover {
+      background-color: #3c3c3c;
+    }
+  </style>
 </head>
 <body>
   <div class="card">
     <img src="tim.jpg" alt="Фото" class="avatar" />
-
     <h1 data-ru="Боровков Тимофей" data-en="Timofey Borovkov">Боровков Тимофей</h1>
     <p class="desc" data-ru="HTML вёрстка" data-en="HTML layout">HTML и CSS вёрстка</p>
-    <p data-ru="Обучаюсь в престижном ГАГПК, люблю HTML и CSS." 
-       data-en="Studying at prestigious GAGPK, love HTML & CSS.">
-       Обучаюсь в престижном ГАГПК, люблю HTML и CSS.
+    <p data-ru="Обучаюсь в престижном ГАГПК, люблю HTML и CSS." data-en="Studying at prestigious GAGPK, love HTML & CSS.">
+      Обучаюсь в престижном ГАГПК, люблю HTML и CSS.
     </p>
+
+    <div class="board" id="board"></div>
+    <p id="status-text" data-ru="Ты играешь: X" data-en="You play: X">Ты играешь: X</p>
+
+    <select id="difficulty">
+      <option value="easy">Лёгкий / Easy</option>
+      <option value="medium">Средний / Medium</option>
+      <option value="hard">Сложный / Hard</option>
+    </select>
+
+    <button id="restart-btn">🔁 Restart</button>
 
     <div class="links">
       <a href="https://github.com/MrBell069" target="_blank"><i class="fab fa-github"></i> GitHub</a>
       <a href="https://t.me/bred_04" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
+      <a href="#" id="toggle-lang"><i class="fas fa-language"></i> English</a>
     </div>
-
-    <button id="toggle-lang"><i class="fas fa-language"></i> English</button>
-
-    <h2 data-ru="Ты играешь за: X" data-en="You play as: X">Ты играешь за: X</h2>
-    <label for="difficulty" id="difficulty-label" data-ru="Сложность:" data-en="Difficulty:">Сложность:</label>
-    <select id="difficulty">
-      <option value="easy">Лёгкая</option>
-      <option value="medium">Средняя</option>
-      <option value="hard">Сложная</option>
-    </select>
-
-    <div class="board" id="board">
-      <div class="cell" data-index="0"></div>
-      <div class="cell" data-index="1"></div>
-      <div class="cell" data-index="2"></div>
-      <div class="cell" data-index="3"></div>
-      <div class="cell" data-index="4"></div>
-      <div class="cell" data-index="5"></div>
-      <div class="cell" data-index="6"></div>
-      <div class="cell" data-index="7"></div>
-      <div class="cell" data-index="8"></div>
-    </div>
-
-    <p id="game-result" style="font-weight: bold; margin-top: 15px;"></p>
-
-    <button id="restart-btn">Сыграть ещё</button>
   </div>
 
   <script>
-    const cells = document.querySelectorAll('.cell');
-    const boardElement = document.getElementById('board');
-    const restartBtn = document.getElementById('restart-btn');
-    const difficultySelect = document.getElementById('difficulty');
-    const toggleBtn = document.getElementById('toggle-lang');
-    const resultText = document.getElementById('game-result');
+    const boardElement = document.getElementById("board");
+    const statusText = document.getElementById("status-text");
+    const restartBtn = document.getElementById("restart-btn");
+    const difficultySelect = document.getElementById("difficulty");
+    const toggleBtn = document.getElementById("toggle-lang");
 
     let board = Array(9).fill(null);
     let gameActive = true;
-    let difficulty = 'easy';
-    let currentLang = 'ru';
+    let currentLang = "ru";
 
     const WINNING_COMBOS = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6]
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
     ];
 
     function renderBoard() {
-      cells.forEach((cell, i) => {
-        cell.textContent = board[i] || '';
+      boardElement.innerHTML = "";
+      board.forEach((cell, i) => {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        div.textContent = cell || "";
+        div.addEventListener("click", () => handleClick(i));
+        boardElement.appendChild(div);
       });
     }
 
-    function makeMove(index, player) {
-      if (board[index] || !gameActive) return;
-      board[index] = player;
-      renderBoard();
-    }
-
-    function showResult(text) {
-      resultText.textContent = text;
-    }
-
-    function checkWinner() {
-      for (let combo of WINNING_COMBOS) {
-        const [a, b, c] = combo;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          gameActive = false;
-          const winText = currentLang === 'ru' ? `Победил: ${board[a]}` : `Winner: ${board[a]}`;
-          showResult(winText);
-          return board[a];
-        }
-      }
-      if (!board.includes(null)) {
-        gameActive = false;
-        const drawText = currentLang === 'ru' ? 'Ничья!' : 'Draw!';
-        showResult(drawText);
-        return 'Draw';
-      }
-      return null;
-    }
-
-    function handleCellClick(e) {
-      const idx = e.target.dataset.index;
-      if (!gameActive || board[idx]) return;
-
-      makeMove(idx, 'X');
-      const result = checkWinner();
-      if (result) return;
-
-      setTimeout(aiMove, 300);
-    }
-
-    function getAvailableMoves() {
-      return board.map((v, i) => v === null ? i : null).filter(v => v !== null);
-    }
-
-    function getRandomMove() {
-      const available = getAvailableMoves();
-      return available[Math.floor(Math.random() * available.length)];
-    }
-
-    function getBestMove() {
-      let bestScore = -Infinity;
-      let move;
-      for (let i of getAvailableMoves()) {
-        board[i] = 'O';
-        let score = minimax(board, 0, false);
-        board[i] = null;
-        if (score > bestScore) {
-          bestScore = score;
-          move = i;
-        }
-      }
-      return move;
-    }
-
-    function minimax(newBoard, depth, isMaximizing) {
-      const result = checkWinner();
-      if (result === 'O') return 10 - depth;
-      if (result === 'X') return depth - 10;
-      if (result === 'Draw') return 0;
-
-      if (isMaximizing) {
-        let bestScore = -Infinity;
-        for (let i of getAvailableMoves()) {
-          newBoard[i] = 'O';
-          let score = minimax(newBoard, depth + 1, false);
-          newBoard[i] = null;
-          bestScore = Math.max(score, bestScore);
-        }
-        return bestScore;
-      } else {
-        let bestScore = Infinity;
-        for (let i of getAvailableMoves()) {
-          newBoard[i] = 'X';
-          let score = minimax(newBoard, depth + 1, true);
-          newBoard[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-        return bestScore;
-      }
-    }
-
-    function aiMove() {
-      if (!gameActive) return;
-      let move;
-      if (difficulty === 'easy') move = getRandomMove();
-      else if (difficulty === 'medium') {
-        move = Math.random() < 0.5 ? getBestMove() : getRandomMove();
-      } else move = getBestMove();
-
-      if (move != null) {
-        makeMove(move, 'O');
-        checkWinner();
-      }
-    }
-
-    function resetGame() {
-      board = Array(9).fill(null);
-      gameActive = true;
-      resultText.textContent = '';
-      renderBoard();
-    }
-
-    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-    restartBtn.addEventListener('click', resetGame);
-    difficultySelect.addEventListener('change', () => {
-      difficulty = difficultySelect.value;
-    });
-
-    toggleBtn.addEventListener('click', () => {
-      currentLang = currentLang === 'ru' ? 'en' : 'ru';
-      document.querySelectorAll('[data-ru]').forEach(el => {
-        el.textContent = el.dataset[currentLang];
-      });
-
-      toggleBtn.innerHTML = currentLang === 'ru'
-        ? '<i class="fas fa-language"></i> English'
-        : '<i class="fas fa-language"></i> Русский';
-
-      document.querySelector('#difficulty-label').textContent =
-        currentLang === 'ru' ? 'Сложность:' : 'Difficulty:';
-    });
-
-    renderBoard();
-  </script>
-</body>
-</html>
+    function handleClick(index) {
+      if (!gameActive || board
