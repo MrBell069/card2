@@ -11,9 +11,14 @@
 <body>
     <div class="card">
         <img src="tim.jpg" alt="Фото" class="avatar">
-        <h1>Боровков Тимофей</h1>
-        <p class="desc">HTML вёрстка</p>
-        <p>Обучаюсь в престижном ГАГПК, люблю HTML и CSS.</p>
+
+        <h1 data-ru="Боровков Тимофей" data-en="Timofey Borovkov">Боровков Тимофей</h1>
+        <p class="desc" data-ru="HTML вёрстка" data-en="HTML layout">HTML вёрстка</p>
+        <p data-ru="Обучаюсь в престижном ГАГПК, люблю HTML и CSS."
+           data-en="Studying at prestigious GAGPK, love HTML & CSS.">
+           Обучаюсь в престижном ГАГПК, люблю HTML и CSS.
+        </p>
+
         <div class="links">
             <a href="https://github.com/MrBell069" target="_blank">
                 <i class="fab fa-github"></i> GitHub
@@ -22,6 +27,21 @@
                 <i class="fab fa-telegram-plane"></i> Telegram
             </a>
         </div>
+
+        <button id="toggle-lang">English</button>
     </div>
+
+    <script>
+        const toggleBtn = document.getElementById('toggle-lang');
+        let currentLang = 'ru';
+
+        toggleBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'ru' ? 'en' : 'ru';
+            document.querySelectorAll('[data-ru]').forEach(el => {
+                el.textContent = el.dataset[currentLang];
+            });
+            toggleBtn.textContent = currentLang === 'ru' ? 'English' : 'Русский';
+        });
+    </script>
 </body>
 </html>
