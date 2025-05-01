@@ -39,3 +39,38 @@ body {
 .links a:hover {
     text-decoration: underline;
 }
+
+body {
+    background-color: #121212; /* тёмный фон */
+    color: #ffffff; /* белый текст */
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #1e1e1e; /* тёмно-серый блок визитки */
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px; /* ширина окна */
+    margin: 50px auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #1e90ff; /* синие ссылки */
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
