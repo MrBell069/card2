@@ -22,4 +22,29 @@
     <div class="links">
       <a href="https://github.com/MrBell069" target="_blank"><i class="fab fa-github"></i> GitHub</a>
       <a href="https://t.me/bred_04" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-      <a href="#" id="toggle-lang"><i class
+      <a href="#" id="toggle-lang"><i class="fas fa-language"></i> English</a>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggle-lang');
+      let currentLang = 'ru';
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+
+        document.querySelectorAll('[data-ru]').forEach(el => {
+          el.textContent = el.dataset[currentLang];
+        });
+
+        toggleBtn.innerHTML = currentLang === 'ru' 
+          ? '<i class="fas fa-language"></i> English' 
+          : '<i class="fas fa-language"></i> Русский';
+      });
+    });
+  </script>
+</body>
+</html>
