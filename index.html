@@ -27,6 +27,14 @@
 
     <div class="game">
       <h2 data-ru="Крестики-нолики" data-en="Tic-Tac-Toe">Крестики-нолики</h2>
+
+      <label for="difficulty">Сложность:</label>
+      <select id="difficulty">
+        <option value="easy">Лёгкая</option>
+        <option value="medium">Средняя</option>
+        <option value="hard">Сложная</option>
+      </select>
+
       <div class="board" id="board"></div>
       <p id="status"></p>
       <button onclick="restartGame()" id="restart-btn">Сыграть ещё</button>
@@ -34,8 +42,173 @@
   </div>
 
   <script>
-    // Переключение языка
+    const boardElement = document.getElementById("board");
+    const statusElement = document.getElementById("status");
+    const difficultySelect = document.getElementById("difficulty");
+
+    let cells = [];
+    let currentPlayer = "X";
+    let gameActive = true;
+
+    const winningCombos = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    function createBoard() {
+      boardElement.innerHTML = "";
+      cells = [];
+      gameActive = true;
+      currentPlayer = "X";
+      statusElement.textContent = "Ты играешь: X";
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.addEventListener("click", () => handleCellClick(i));
+        boardElement.appendChild(cell);
+        cells.push(cell);
+      }
+    }
+
+    function handleCellClick(index) {
+      if (!gameActive || cells[index].textContent) return;
+
+      cells[index].textContent = currentPlayer;
+      if (checkWin(currentPlayer)) {
+        statusElement.textContent = `Победил: ${currentPlayer}`;
+        gameActive = false;
+        return;
+      }
+      if (isBoardFull()) {
+        statusElement.textContent = "Ничья!";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = "O";
+      setTimeout(computerMove, 300);
+    }
+
+    function computerMove() {
+      if (!gameActive) return;
+      const level = difficultySelect.value;
+      let move;
+
+      if (level === "easy") {
+        move = randomMove();
+      } else if (level === "medium") {
+        move = blockPlayer() ?? randomMove();
+      } else {
+        move = bestMove();
+      }
+
+      if (move !== undefined) {
+        cells[move].textContent = currentPlayer;
+      }
+
+      if (checkWin(currentPlayer)) {
+        statusElement.textContent = `Победил: ${currentPlayer}`;
+        gameActive = false;
+        return;
+      }
+
+      if (isBoardFull()) {
+        statusElement.textContent = "Ничья!";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = "X";
+      statusElement.textContent = "Твой ход: X";
+    }
+
+    function randomMove() {
+      const empty = cells
+        .map((cell, i) => cell.textContent === "" ? i : null)
+        .filter(i => i !== null);
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    function blockPlayer() {
+      for (let combo of winningCombos) {
+        const [a, b, c] = combo;
+        const values = [cells[a].textContent, cells[b].textContent, cells[c].textContent];
+        if (values.filter(v => v === "X").length === 2 && values.includes("")) {
+          return combo[values.indexOf("")];
+        }
+      }
+      return null;
+    }
+
+    function bestMove() {
+      let bestScore = -Infinity;
+      let move;
+
+      for (let i = 0; i < 9; i++) {
+        if (cells[i].textContent === "") {
+          cells[i].textContent = "O";
+          let score = minimax(0, false);
+          cells[i].textContent = "";
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+
+      return move;
+    }
+
+    function minimax(depth, isMaximizing) {
+      if (checkWin("O")) return 10 - depth;
+      if (checkWin("X")) return depth - 10;
+      if (isBoardFull()) return 0;
+
+      if (isMaximizing) {
+        let best = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (cells[i].textContent === "") {
+            cells[i].textContent = "O";
+            let score = minimax(depth + 1, false);
+            cells[i].textContent = "";
+            best = Math.max(score, best);
+          }
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (cells[i].textContent === "") {
+            cells[i].textContent = "X";
+            let score = minimax(depth + 1, true);
+            cells[i].textContent = "";
+            best = Math.min(score, best);
+          }
+        }
+        return best;
+      }
+    }
+
+    function isBoardFull() {
+      return cells.every(cell => cell.textContent !== "");
+    }
+
+    function checkWin(player) {
+      return winningCombos.some(combo =>
+        combo.every(i => cells[i].textContent === player)
+      );
+    }
+
+    function restartGame() {
+      createBoard();
+    }
+
+    // Языковое переключение
     window.addEventListener('DOMContentLoaded', () => {
+      createBoard();
+
       const toggleBtn = document.getElementById('toggle-lang');
       let currentLang = 'ru';
 
@@ -51,67 +224,7 @@
           ? '<i class="fas fa-language"></i> English' 
           : '<i class="fas fa-language"></i> Русский';
       });
-
-      createBoard();
     });
-
-    // Крестики-нолики
-    const board = document.getElementById("board");
-    const status = document.getElementById("status");
-    let cells = [];
-    let currentPlayer = "X";
-    let gameActive = true;
-
-    function createBoard() {
-      board.innerHTML = "";
-      cells = [];
-      for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.addEventListener("click", () => handleCellClick(i));
-        board.appendChild(cell);
-        cells.push(cell);
-      }
-      status.textContent = "Ходит: X";
-      gameActive = true;
-      currentPlayer = "X";
-    }
-
-    function handleCellClick(index) {
-      if (!gameActive || cells[index].textContent) return;
-
-      cells[index].textContent = currentPlayer;
-
-      if (checkWin(currentPlayer)) {
-        status.textContent = `Победил: ${currentPlayer}`;
-        gameActive = false;
-        return;
-      }
-
-      if (cells.every(cell => cell.textContent)) {
-        status.textContent = "Ничья!";
-        gameActive = false;
-        return;
-      }
-
-      currentPlayer = currentPlayer === "X" ? "O" : "X";
-      status.textContent = `Ходит: ${currentPlayer}`;
-    }
-
-    function checkWin(player) {
-      const winCombos = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
-      return winCombos.some(combo =>
-        combo.every(i => cells[i].textContent === player)
-      );
-    }
-
-    function restartGame() {
-      createBoard();
-    }
   </script>
 </body>
 </html>
