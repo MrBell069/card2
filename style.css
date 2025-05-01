@@ -14,7 +14,7 @@ body {
     background-color: #1e1e1e; /* тёмно-серый блок визитки */
     border-radius: 12px;
     padding: 30px;
-    max-width: 600px; /* ширина окна */
+    max-width: 800px; /* ширина окна */
     margin: 50px auto;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
     text-align: center;
